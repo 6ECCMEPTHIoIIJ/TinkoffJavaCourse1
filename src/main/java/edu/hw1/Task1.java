@@ -6,8 +6,6 @@ public final class Task1 {
     private final static String SEPARATOR = ":";
     private final static int SECONDS_PER_MINUTE = 60;
 
-    private final static char MINUS_SIGN = '-';
-
     private Task1() {
     }
 

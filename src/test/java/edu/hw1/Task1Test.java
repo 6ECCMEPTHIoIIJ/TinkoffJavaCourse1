@@ -17,16 +17,16 @@ public class Task1Test {
     @DisplayName("Проверка обычной строки в формате mm:ss")
     @MethodSource("commonTimeArgsProviderFactory")
     public void checkCommonTime(TimeTestArgs time) {
-        assertThat(Task1.minutesToSeconds(time.string))
-            .isEqualTo(time.value);
+        assertThat(Task1.minutesToSeconds(time.given))
+            .isEqualTo(time.expected);
     }
 
     @ParameterizedTest
     @DisplayName("Проверка строки с нулевым временем")
     @MethodSource("zeroTimeArgsProviderFactory")
     public void checkZeroTime(TimeTestArgs time) {
-        assertThat(Task1.minutesToSeconds(time.string))
-            .isEqualTo(time.value);
+        assertThat(Task1.minutesToSeconds(time.given))
+            .isEqualTo(time.expected);
     }
 
     @Test
@@ -87,6 +87,6 @@ public class Task1Test {
             "12a30", "12 30", "-12-30", "12:30a", "a12:30", "12:3a0");
     }
 
-    public record TimeTestArgs(String string, long value) {
+    public record TimeTestArgs(String given, long expected) {
     }
 }

@@ -8,7 +8,7 @@ public final class Task0 {
 
     private Task0() {}
 
-    public static void printHello(String[] args) {
+    public static void printHello() {
         LOGGER.info("Привет, мир!");
     }
 }
