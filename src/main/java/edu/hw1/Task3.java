@@ -1,5 +1,6 @@
 package edu.hw1;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public final class Task3 {
@@ -7,13 +8,15 @@ public final class Task3 {
     }
 
     public static boolean isNestable(int[] left, int[] right)
-        throws NullPointerException, IllegalArgumentException  {
+        throws NullPointerException {
         if (left == null || right == null) {
             throw new NullPointerException();
         }
 
-        if (left.length == 0 || right.length == 0) {
-            throw new IllegalArgumentException();
+        if (left.length == 0) {
+            return true;
+        } else if (right.length == 0) {
+            return false;
         }
 
         MinMax leftMinMax = getMinMax(left);
@@ -23,7 +26,7 @@ public final class Task3 {
             && leftMinMax.max < rightMinMax.max;
     }
 
-    private static MinMax getMinMax(int @NotNull [] a) {
+    @Contract("_ -> new") private static @NotNull MinMax getMinMax(int @NotNull [] a) {
         int min = a[0];
         int max = a[0];
         for (var el : a) {

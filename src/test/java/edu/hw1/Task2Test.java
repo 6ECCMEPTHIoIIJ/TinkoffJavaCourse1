@@ -1,17 +1,17 @@
 package edu.hw1;
 
+import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import java.util.stream.Stream;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class Task2Test {
     @ParameterizedTest
     @DisplayName("Проверка неотрицательных чисел")
     @MethodSource("nonNegativeNumbersArgsProviderFactory")
-    public void checkNonNegativeNumbers(NumberTestArgs num) {
+    public void checkNonNegativeNumbers(@NotNull NumberTestArgs num) {
         assertThat(Task2.countDigits(num.given))
             .isEqualTo(num.expected);
     }
@@ -19,7 +19,7 @@ public class Task2Test {
     @ParameterizedTest
     @DisplayName("Проверка отрицательных чисел")
     @MethodSource("negativeNumbersArgsProviderFactory")
-    public void checkNegativeNumbers(NumberTestArgs num) {
+    public void checkNegativeNumbers(@NotNull NumberTestArgs num) {
         assertThat(Task2.countDigits(num.given))
             .isEqualTo(num.expected);
     }

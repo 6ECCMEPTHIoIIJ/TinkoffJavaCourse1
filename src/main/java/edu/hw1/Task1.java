@@ -1,46 +1,33 @@
 package edu.hw1;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public final class Task1 {
-    private final static int MINUTES_MIN_LENGTH = 2;
-    private final static int SECONDS_LENGTH = 2;
     private final static String SEPARATOR = ":";
     private final static int SECONDS_PER_MINUTE = 60;
+
+    private final static String TIME_STRING_REGEX = "\\d{2,}:[0-5][0-9]";
+    private final static Pattern TIME_PATTERN = Pattern.compile(TIME_STRING_REGEX);
 
     private Task1() {
     }
 
-    public static long minutesToSeconds(String time)
-        throws NullPointerException, IllegalArgumentException {
-        if (time == null) {
+    public static long minutesToSeconds(String timeString)
+        throws NullPointerException {
+        if (timeString == null) {
             throw new NullPointerException();
         }
 
-        final long nonDigitsCount = time.chars()
-            .filter((ch) -> !Character.isDigit(ch))
-            .count();
-        if (nonDigitsCount != 1) {
-            throw new IllegalArgumentException();
+        Matcher timeMatcher = TIME_PATTERN.matcher(timeString);
+        if (!timeMatcher.matches()) {
+            return -1;
         }
 
-        final String[] separatedTime = time.split(SEPARATOR);
-        if (separatedTime.length != 2
-            || separatedTime[0].length() < MINUTES_MIN_LENGTH
-            || separatedTime[1].length() != SECONDS_LENGTH) {
-            throw new IllegalArgumentException();
-        }
+        final String[] separatedTimeStrings = timeString.split(SEPARATOR);
+        int minutes = Integer.parseInt(separatedTimeStrings[0]);
+        int seconds = Integer.parseInt(separatedTimeStrings[1]);
 
-        int minutes;
-        int seconds;
-
-        try {
-            minutes = Integer.parseInt(separatedTime[0]);
-            seconds = Integer.parseInt(separatedTime[1]);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException();
-        }
-
-        return (seconds < SECONDS_PER_MINUTE)
-            ? seconds + (long) minutes * SECONDS_PER_MINUTE
-            : -1;
+        return seconds + (long) minutes * SECONDS_PER_MINUTE;
     }
 }
