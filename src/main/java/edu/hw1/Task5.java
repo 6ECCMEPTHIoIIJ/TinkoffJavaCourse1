@@ -40,11 +40,12 @@ public class Task5 {
     }
 
     public static boolean isPalindromeDescendant(int num) {
-        if (isPalindrome(num)) {
+        int absNum = Math.abs(num);
+        if (isPalindrome(absNum)) {
             return true;
         }
 
-        int child = calculateChild(num);
+        int child = calculateChild(absNum);
 
         return child >= MIN_TWO_DIGIT_NUMBER
             && isPalindromeDescendant(child);

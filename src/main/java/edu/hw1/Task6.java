@@ -8,6 +8,16 @@ public class Task6 {
     private final static int MAX_FOUR_DIGIT_NUMBER = 9999;
     private final static int MIN_FOUR_DIGIT_NUMBER = 1000;
 
+    private final static int NUM_OF_ONES = 1111;
+    private final static int NUM_OF_TWOS = 2222;
+    private final static int NUM_OF_TRIPLETS = 3333;
+    private final static int NUM_OF_FOURS = 4444;
+    private final static int NUM_OF_FIVES = 5555;
+    private final static int NUM_OF_SIXES = 6666;
+    private final static int NUM_OF_SEVENS = 7777;
+    private final static int NUM_OF_EIGHTS = 8888;
+    private final static int NUM_OF_NINES = 9999;
+
     private final static int FOUR_DIGIT_NUMBER_DIGITS_COUNT = 4;
 
     private final static int DECIMAL_BASE = 10;
@@ -16,19 +26,16 @@ public class Task6 {
 
     }
 
-    private static boolean hasNumberDifferentDigits(int num) {
-        int numCopy = num;
-        int firstDigit = num % DECIMAL_BASE;
-        numCopy /= DECIMAL_BASE;
-        for (int i = num; i > 0; i /= DECIMAL_BASE) {
-            int digit = numCopy % DECIMAL_BASE;
-
-            if (digit != firstDigit) {
-                return true;
-            }
-        }
-
-        return false;
+    private static boolean hasNumberAllDifferentDigits(int num) {
+        return num != NUM_OF_ONES
+            && num != NUM_OF_TWOS
+            && num != NUM_OF_TRIPLETS
+            && num != NUM_OF_FOURS
+            && num != NUM_OF_FIVES
+            && num != NUM_OF_SIXES
+            && num != NUM_OF_SEVENS
+            && num != NUM_OF_EIGHTS
+            && num != NUM_OF_NINES;
     }
 
     private static int reverseNumber(int num) {
@@ -51,7 +58,9 @@ public class Task6 {
     }
 
     public static int countK(int num) {
-        if ((num <= MIN_FOUR_DIGIT_NUMBER || num > MAX_FOUR_DIGIT_NUMBER) && hasNumberDifferentDigits(num)) {
+        if (num <= MIN_FOUR_DIGIT_NUMBER
+            || num > MAX_FOUR_DIGIT_NUMBER
+            || !hasNumberAllDifferentDigits(num)) {
             return -1;
         }
 
