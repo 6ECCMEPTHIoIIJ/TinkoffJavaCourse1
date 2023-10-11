@@ -15,7 +15,7 @@ public class Task8 {
         int rightShift = Math.max(0, dX);
         for (int y = 0; y < desk.length - dY; ++y) {
             for (int x = leftShift; x < desk[0].length - rightShift; ++x) {
-                if (desk[y + dY][x + dX]) {
+                if (desk[y][x] && desk[y + dY][x + dX]) {
                     return true;
                 }
             }
@@ -24,10 +24,15 @@ public class Task8 {
         return false;
     }
 
-    public static boolean knightBoardCapture(boolean[][] desk) {
-        return isKnightOverlapped(desk, -KNIGHT_LONG_MOVE_DISTANCE, KNIGHT_SHORT_MOVE_DISTANCE)
-            || isKnightOverlapped(desk, -KNIGHT_SHORT_MOVE_DISTANCE, KNIGHT_LONG_MOVE_DISTANCE)
-            || isKnightOverlapped(desk, KNIGHT_SHORT_MOVE_DISTANCE, KNIGHT_LONG_MOVE_DISTANCE)
-            || isKnightOverlapped(desk, KNIGHT_LONG_MOVE_DISTANCE, KNIGHT_SHORT_MOVE_DISTANCE);
+    public static boolean knightBoardCapture(boolean[][] desk)
+        throws NullPointerException {
+        if (desk == null) {
+            throw new NullPointerException();
+        }
+
+        return !isKnightOverlapped(desk, -KNIGHT_LONG_MOVE_DISTANCE, KNIGHT_SHORT_MOVE_DISTANCE)
+            && !isKnightOverlapped(desk, -KNIGHT_SHORT_MOVE_DISTANCE, KNIGHT_LONG_MOVE_DISTANCE)
+            && !isKnightOverlapped(desk, KNIGHT_SHORT_MOVE_DISTANCE, KNIGHT_LONG_MOVE_DISTANCE)
+            && !isKnightOverlapped(desk, KNIGHT_LONG_MOVE_DISTANCE, KNIGHT_SHORT_MOVE_DISTANCE);
     }
 }
