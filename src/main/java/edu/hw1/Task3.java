@@ -7,10 +7,9 @@ public final class Task3 {
     private Task3() {
     }
 
-    public static boolean isNestable(int[] left, int[] right)
-        throws NullPointerException {
+    public static boolean isNestable(int[] left, int[] right) {
         if (left == null || right == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         if (left.length == 0) {

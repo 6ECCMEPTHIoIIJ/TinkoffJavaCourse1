@@ -7,12 +7,16 @@ public final class Task2 {
     }
 
     public static int countDigits(int num) {
+        if (num < 0) {
+            return -1;
+        }
+
         int count = 0;
-        int absNum = Math.abs(num);
+        int numCopy = num;
         do {
             ++count;
-            absNum /= DECIMAL_BASE;
-        } while (absNum > 0);
+            numCopy /= DECIMAL_BASE;
+        } while (numCopy > 0);
 
         return count;
     }

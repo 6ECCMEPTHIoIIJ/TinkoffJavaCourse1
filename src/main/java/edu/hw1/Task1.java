@@ -6,17 +6,14 @@ import java.util.regex.Pattern;
 public final class Task1 {
     private final static String SEPARATOR = ":";
     private final static int SECONDS_PER_MINUTE = 60;
-
-    private final static String TIME_STRING_REGEX = "\\d{2,}:[0-5][0-9]";
-    private final static Pattern TIME_PATTERN = Pattern.compile(TIME_STRING_REGEX);
+    private final static Pattern TIME_PATTERN = Pattern.compile("\\d{2,}:[0-5][0-9]");
 
     private Task1() {
     }
 
-    public static long minutesToSeconds(String timeString)
-        throws NullPointerException {
+    public static long minutesToSeconds(String timeString) {
         if (timeString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         Matcher timeMatcher = TIME_PATTERN.matcher(timeString);

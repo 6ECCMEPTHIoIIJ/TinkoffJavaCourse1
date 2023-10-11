@@ -8,10 +8,9 @@ public class Task4 {
 
     }
 
-    @Contract("null -> fail") public static @NotNull String fixString(String brokenString)
-        throws NullPointerException {
+    @Contract("null -> fail") public static @NotNull String fixString(String brokenString) {
         if (brokenString == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         var fixer = new StringBuilder();

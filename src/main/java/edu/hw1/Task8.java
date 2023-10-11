@@ -24,10 +24,9 @@ public class Task8 {
         return false;
     }
 
-    public static boolean knightBoardCapture(boolean[][] desk)
-        throws NullPointerException {
+    public static boolean knightBoardCapture(boolean[][] desk) {
         if (desk == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
 
         return !isKnightOverlapped(desk, -KNIGHT_LONG_MOVE_DISTANCE, KNIGHT_SHORT_MOVE_DISTANCE)

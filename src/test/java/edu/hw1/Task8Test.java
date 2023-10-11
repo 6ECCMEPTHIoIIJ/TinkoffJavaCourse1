@@ -31,7 +31,7 @@ public class Task8Test {
     @DisplayName("Проверка null доски")
     public void checkNullDesk() {
         Throwable throwable = assertThrows(
-            NullPointerException.class,
+            IllegalArgumentException.class,
             () -> Task8.knightBoardCapture(null)
         );
 
@@ -59,6 +59,15 @@ public class Task8Test {
                 {false, false, false, false, false, false, false, false},
                 {false, false, false, false, false, false, true, false}}, true),
             new DeskTestArgs(new boolean[][] {
+                {false, false, false, true, false, false, false, false},
+                {false, false, false, false, false, false, false, false},
+                {false, true, false, false, false, true, false, false},
+                {false, false, false, false, true, false, true, false},
+                {false, true, false, false, false, true, false, false},
+                {false, false, false, false, false, false, false, false},
+                {false, true, false, false, false, false, false, true},
+                {false, false, false, false, true, false, false, false}}, true),
+            new DeskTestArgs(new boolean[][] {
                 {true, false, true, false, true, false, true, false},
                 {false, true, false, true, false, true, false, true},
                 {true, false, true, false, true, false, true, false},
@@ -72,6 +81,24 @@ public class Task8Test {
 
     static @NotNull Stream<DeskTestArgs> capturedDeskProviderFactory() {
         return Stream.of(
+            new DeskTestArgs(new boolean[][] {
+                {true, false, true, false, true, false, true, false},
+                {false, true, false, true, false, true, false, true},
+                {false, false, false, false, true, false, true, false},
+                {false, false, true, false, false, true, false, true},
+                {true, false, false, false, true, false, true, false},
+                {false, false, false, false, false, true, false, true},
+                {true, false, false, false, true, false, true, false},
+                {false, false, false, true, false, true, false, true}}, false),
+            new DeskTestArgs(new boolean[][] {
+                {false, false, false, false, true, false, false, false},
+                {false, false, false, false, false, true, false, false},
+                {false, false, false, true, false, false, false, false},
+                {true, false, false, false, false, false, false, false},
+                {false, false, false, false, true, false, false, false},
+                {false, false, false, false, false, true, false, false},
+                {false, false, false, false, false, true, false, false},
+                {true, false, false, false, false, false, false, false}}, false),
             new DeskTestArgs(new boolean[][] {
                 {false, false, false, false, false, false, false, false},
                 {false, false, false, false, false, false, false, false},

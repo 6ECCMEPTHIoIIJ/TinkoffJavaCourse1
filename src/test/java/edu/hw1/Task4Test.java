@@ -32,7 +32,7 @@ public class Task4Test {
     @DisplayName("Проверка null строки")
     public void checkNullString() {
         Throwable throwable = assertThrows(
-            NullPointerException.class,
+            IllegalArgumentException.class,
             () -> Task4.fixString(null)
         );
 

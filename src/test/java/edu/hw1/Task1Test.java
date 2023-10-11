@@ -33,7 +33,7 @@ public class Task1Test {
     @DisplayName("Проверка времени на null")
     public void checkNullTime() {
         Throwable throwable = assertThrows(
-            NullPointerException.class,
+            IllegalArgumentException.class,
             () -> Task1.minutesToSeconds(null)
         );
 

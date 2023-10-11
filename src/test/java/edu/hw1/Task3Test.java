@@ -39,7 +39,7 @@ public class Task3Test {
     @MethodSource("nullArrayArgsProviderFactory")
     public void checkNullArray(@NotNull ArrayTestArgs arrays) {
         Throwable throwable = assertThrows(
-            NullPointerException.class,
+            IllegalArgumentException.class,
             () -> Task3.isNestable(arrays.left, arrays.right)
         );
 

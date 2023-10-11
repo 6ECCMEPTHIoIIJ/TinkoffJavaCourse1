@@ -7,19 +7,7 @@ public class Task6 {
     private final static int CONST_K = 6174;
     private final static int MAX_FOUR_DIGIT_NUMBER = 9999;
     private final static int MIN_FOUR_DIGIT_NUMBER = 1000;
-
-    private final static int NUM_OF_ONES = 1111;
-    private final static int NUM_OF_TWOS = 2222;
-    private final static int NUM_OF_TRIPLETS = 3333;
-    private final static int NUM_OF_FOURS = 4444;
-    private final static int NUM_OF_FIVES = 5555;
-    private final static int NUM_OF_SIXES = 6666;
-    private final static int NUM_OF_SEVENS = 7777;
-    private final static int NUM_OF_EIGHTS = 8888;
-    private final static int NUM_OF_NINES = 9999;
-
     private final static int FOUR_DIGIT_NUMBER_DIGITS_COUNT = 4;
-
     private final static int DECIMAL_BASE = 10;
 
     private Task6() {
@@ -27,15 +15,18 @@ public class Task6 {
     }
 
     private static boolean hasNumberAllDifferentDigits(int num) {
-        return num != NUM_OF_ONES
-            && num != NUM_OF_TWOS
-            && num != NUM_OF_TRIPLETS
-            && num != NUM_OF_FOURS
-            && num != NUM_OF_FIVES
-            && num != NUM_OF_SIXES
-            && num != NUM_OF_SEVENS
-            && num != NUM_OF_EIGHTS
-            && num != NUM_OF_NINES;
+        int numCopy = num;
+        int firstDigit = numCopy % DECIMAL_BASE;
+        numCopy /= DECIMAL_BASE;
+        while (numCopy > 0) {
+            if (numCopy % DECIMAL_BASE != firstDigit) {
+                return true;
+            }
+
+            numCopy /= DECIMAL_BASE;
+        }
+
+        return false;
     }
 
     private static int reverseNumber(int num) {

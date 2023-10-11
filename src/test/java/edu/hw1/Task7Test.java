@@ -51,7 +51,8 @@ public class Task7Test {
             new RotationTestArgs(17, -2, 12),
             new RotationTestArgs(17, -7, 12),
             new RotationTestArgs(0, -7, 0),
-            new RotationTestArgs(7, 0, 7)
+            new RotationTestArgs(7, 0, 7),
+            new RotationTestArgs(Integer.MAX_VALUE, 15, Integer.MAX_VALUE)
         );
     }
 
@@ -66,7 +67,8 @@ public class Task7Test {
             new RotationTestArgs(17, -2, 6),
             new RotationTestArgs(17, -7, 6),
             new RotationTestArgs(0, -7, 0),
-            new RotationTestArgs(7, 0, 7)
+            new RotationTestArgs(7, 0, 7),
+            new RotationTestArgs(Integer.MAX_VALUE, 2, Integer.MAX_VALUE)
         );
     }
 
