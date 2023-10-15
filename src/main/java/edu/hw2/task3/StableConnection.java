@@ -1,13 +1,12 @@
 package edu.hw2.task3;
 
-public class StableConnection implements Connection {
-    @Override
-    public void execute(String command) {
-        Utility.LOGGER.info("Command <{}> executed successfully", command);
+public class StableConnection extends ConnectionBase {
+    public StableConnection(ConnectionManager owner) {
+        super(owner);
     }
 
     @Override
-    public void close() throws Exception {
-        Utility.LOGGER.info("Stable connection closed successfully");
+    public void execute(String command) {
+
     }
 }

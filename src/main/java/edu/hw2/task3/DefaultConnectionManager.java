@@ -1,14 +1,16 @@
 package edu.hw2.task3;
 
-public class DefaultConnectionManager implements ConnectionManager {
-    boolean needToReturnFaultyConnection = false;
+import java.util.Random;
+
+public class DefaultConnectionManager extends ConnectionManagerBase {
+    private final static Random RANDOM = new Random();
 
     @Override
     public Connection getConnection() {
-        boolean oldNeedToReturnFaultyConnection = needToReturnFaultyConnection;
-        needToReturnFaultyConnection = !needToReturnFaultyConnection;
-        return (oldNeedToReturnFaultyConnection)
-            ? new FaultyConnection()
-            : new StableConnection();
+        openConnection();
+
+        return RANDOM.nextBoolean()
+            ? new StableConnection(this)
+            : new FaultyConnection(this);
     }
 }

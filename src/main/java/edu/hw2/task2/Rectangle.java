@@ -13,12 +13,12 @@ public class Rectangle {
         return height;
     }
 
-    public int getWight() {
-        return wight;
-    }
-
     public Rectangle setHeight(int height) {
         return new Rectangle(height, wight);
+    }
+
+    public int getWight() {
+        return wight;
     }
 
     public Rectangle setWidth(int width) {

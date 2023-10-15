@@ -1,8 +1,10 @@
 package edu.hw2.task3;
 
-public class FaultyConnectionManager implements ConnectionManager {
+public class FaultyConnectionManager extends ConnectionManagerBase {
     @Override
     public Connection getConnection() {
-        return new FaultyConnection();
+        openConnection();
+
+        return new FaultyConnection(this);
     }
 }

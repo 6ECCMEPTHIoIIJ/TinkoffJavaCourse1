@@ -19,35 +19,16 @@ public final class PopularCommandExecutor {
     }
 
     private void tryExecute(String command) throws Exception {
-        Connection connection = manager.getConnection();
         ConnectionException cause = new ConnectionException();
-        boolean isExecuted = false;
-        for (int attemptCount = 0; attemptCount < maxAttempts && !isExecuted; ++attemptCount) {
-            try {
+        for (int attemptCount = 0; attemptCount < maxAttempts; ++attemptCount) {
+            try (Connection connection = manager.getConnection()) {
                 connection.execute(command);
-                isExecuted = true;
+                return;
             } catch (ConnectionException e) {
-                int attemptsLeft = maxAttempts - attemptCount - 1;
-                if (attemptsLeft > 0) {
-                    Utility.LOGGER.error("Connection error. {} attempts left", attemptsLeft);
-                } else {
-                    Utility.LOGGER.error("Connection lost");
-                }
-
                 cause = e;
             }
         }
 
-        connection.close();
-        if (!isExecuted) {
-            throw new ConnectionException(cause);
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        PopularCommandExecutor executor = new PopularCommandExecutor(new FaultyConnectionManager(), 1);
-        for (int i = 0; i < 100; ++i) {
-            executor.updatePackages();
-        }
+        throw new ConnectionException(cause);
     }
 }
