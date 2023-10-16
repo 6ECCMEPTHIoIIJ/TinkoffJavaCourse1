@@ -7,10 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class HangmanDictionary implements Dictionary {
     private final List<String> words = Arrays.asList(
-        "Hello",
+        "Play",
         "Sword",
         "Art",
-        "Online"
+        "Online",
+        "Fadet"
     );
 
     private final Random random = new Random();
