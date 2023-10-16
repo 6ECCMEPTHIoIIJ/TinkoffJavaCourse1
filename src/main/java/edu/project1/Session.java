@@ -19,26 +19,37 @@ public class Session {
 
     @NotNull public GuessResult guess(char guess) {
         if (isAnswerRight(guess)) {
-            return null;
+            updateAnswer(guess);
+
+            return new SuccessfulGuess(attemptsCount, maxAttempts, answer);
         } else {
             ++attemptsCount;
-            return null;
+
+            return (attemptsCount == maxAttempts)
+                ? new Defeat(attemptsCount, maxAttempts, answer)
+                : new FailedGuess(attemptsCount, maxAttempts, answer);
         }
     }
 
     @NotNull public GuessResult giveUp() {
-        return null;
+        return new Defeat(attemptsCount, maxAttempts, answer);
     }
 
     private boolean isAnswerRight(char guess) {
-        boolean isAnswerRight = false;
         for (int i = 0; i < maxAttempts; ++i) {
             if (answer.charAt(i) == guess) {
-                userAnswer[i] = guess;
-                isAnswerRight = true;
+                return true;
             }
         }
 
-        return isAnswerRight;
+        return false;
+    }
+
+    private void updateAnswer(char guess) {
+        for (int i = 0; i < maxAttempts; ++i) {
+            if (answer.charAt(i) == guess) {
+                userAnswer[i] = answer.charAt(i);
+            }
+        }
     }
 }
