@@ -1,86 +1,96 @@
 package edu.project1;
 
-public class Session implements AutoCloseable {
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
-    private final String answer;
-    private final char[] userAnswer;
-    private final int maxAttempts;
-    private int attemptsCount = 0;
+public class Session {
+    private final SessionInfo sessionInfo;
+    private final Observable<SuccessfulGuessInfo> successfulGuessEvent = new Observable<>();
+    private final Observable<FailedGuessInfo> failedGuessEvent = new Observable<>();
+    private final Observable<WinInfo> winEvent = new Observable<>();
+    private final Observable<DefeatInfo> defeatEvent = new Observable<>();
+
     private int hitsCount = 0;
+    private int attemptsCount = 0;
 
-    private final SuccessfulGuessObservable successfulGuessObservable = new SuccessfulGuessObservable();
-    private final FailedGuessObservable failedGuessObservable = new FailedGuessObservable();
-    private final DefeatObservable defeatObservable = new DefeatObservable();
-    private final WinObservable winObservable = new WinObservable();
-    private final FailedGuessHandler failedGuessHandler;
-    private final SuccessfulGuessHandler successfulGuessHandler;
+    private final Set<Character> letters = new HashSet<>();
 
     public Session(String answer) {
-        this.answer = answer;
-        this.maxAttempts = answer.length();
-
-        userAnswer = new char[maxAttempts];
-        java.util.Arrays.fill(userAnswer, '*');
-
-        failedGuessHandler = new FailedGuessHandler(defeatObservable);
-        successfulGuessHandler = new SuccessfulGuessHandler(winObservable);
-
-        failedGuessHandler.subscribe(failedGuessObservable);
-        successfulGuessHandler.subscribe(successfulGuessObservable);
+        this.sessionInfo = new SessionInfo(answer);
     }
 
-    public void guess(char guess) {
-        if (updateAnswer(guess)) {
-            successfulGuessObservable.sendNotification(new SuccessfulGuessData(
-                new String(userAnswer), hitsCount, maxAttempts));
+    public void guess(char ch) {
+        if (sessionInfo.containsCharacter(ch)) {
+            ++hitsCount;
+            letters.add(ch);
+            sendSuccessNotification();
+            if (hitsCount == sessionInfo.getMaxHits()) {
+                sendWinNotification();
+            }
         } else {
-            failedGuessObservable.sendNotification(new FailedGuessData(
-                answer, new String(userAnswer), attemptsCount, maxAttempts));
+            ++attemptsCount;
+            sendFailNotification();
+            if (attemptsCount == sessionInfo.getMaxAttempts()) {
+                sendDefeatNotification();
+            }
         }
     }
 
     public void giveUp() {
-        defeatObservable.sendNotification(new edu.project1.DefeatData(answer));
+        sendDefeatNotification();
     }
 
-    public DefeatObservable getDefeatObservable() {
-        return defeatObservable;
+    public void addSuccessfulGuessHandler(@NotNull Observer<SuccessfulGuessInfo> handler) {
+        handler.subscribe(successfulGuessEvent);
     }
 
-    public WinObservable getWinObservable() {
-        return winObservable;
+    public void addFailedGuessHandler(@NotNull Observer<FailedGuessInfo> handler) {
+        handler.subscribe(failedGuessEvent);
     }
 
-    public SuccessfulGuessObservable getSuccessfulGuessObservable() {
-        return successfulGuessObservable;
+    public void addWinHandler(@NotNull Observer<WinInfo> handler) {
+        handler.subscribe(winEvent);
     }
 
-    public FailedGuessObservable getFailedGuessObservable() {
-        return failedGuessObservable;
+    public void addDefeatHandler(@NotNull Observer<DefeatInfo> handler) {
+        handler.subscribe(defeatEvent);
     }
 
-    @Override
-    public void close() throws Exception {
-        failedGuessHandler.unsubscribe();
-        successfulGuessHandler.unsubscribe();
+    private void sendSuccessNotification() {
+        successfulGuessEvent.sendNotification(new SuccessfulGuessInfo(getUserAnswer()));
     }
 
-    private boolean updateAnswer(char guess) {
-        boolean isAnswerCorrect = java.util.stream.IntStream.range(0, maxAttempts).filter((i) -> {
-            boolean isHit = false;
-            if (Character.toLowerCase(answer.charAt(i)) == Character.toLowerCase(guess)) {
-                ++hitsCount;
-                userAnswer[i] = answer.charAt(i);
-                isHit = true;
+    private void sendFailNotification() {
+        failedGuessEvent.sendNotification(new FailedGuessInfo(
+            getUserAnswer(),
+            attemptsCount,
+            sessionInfo.getMaxAttempts()
+        ));
+    }
+
+    private void sendWinNotification() {
+        winEvent.sendNotification(new WinInfo(sessionInfo.getAnswer()));
+    }
+
+    private void sendDefeatNotification() {
+        defeatEvent.sendNotification(new DefeatInfo(sessionInfo.getAnswer()));
+    }
+
+    @Contract(" -> new") private @NotNull String getUserAnswer() {
+        char[] rawAnswer = new char[sessionInfo.getMaxAttempts()];
+        Arrays.fill(rawAnswer, '-');
+
+        for (Character ch : letters) {
+            for (Integer i : sessionInfo.getPositionsOfCharacter(ch)) {
+                rawAnswer[i] = sessionInfo.getAnswer().charAt(i);
             }
-
-            return isHit;
-        }).count() > 0;
-
-        if (!isAnswerCorrect) {
-            ++attemptsCount;
         }
 
-        return isAnswerCorrect;
+        return new String(rawAnswer);
     }
 }
+
+

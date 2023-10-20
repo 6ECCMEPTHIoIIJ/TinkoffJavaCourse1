@@ -1,27 +1,47 @@
 package edu.project1;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class HangmanConsole {
-    private final FailedGuessLogger failedGuessLogger = new edu.project1.FailedGuessLogger();
-    private final SuccessfulGuessLogger successfulGuessLogger = new edu.project1.SuccessfulGuessLogger();
-    private final WinLogger winLogger = new edu.project1.WinLogger();
-    private final DefeatLogger defeatLogger = new edu.project1.DefeatLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public void run() throws Exception {
-        try (Session session = new edu.project1.Session("Aboba")) {
-            failedGuessLogger.subscribe(session.getFailedGuessObservable());
-            successfulGuessLogger.subscribe(session.getSuccessfulGuessObservable());
+        Session session = new Session("Aboba");
+        Observer<SuccessfulGuessInfo> successfulGuessHandler = new Observer<>(s -> {
+            LOGGER.info("Hit!");
+            LOGGER.info("The word is {}", s.userAnswer());
+        });
 
-            winLogger.subscribe(session.getWinObservable());
-            defeatLogger.subscribe(session.getDefeatObservable());
+        Observer<FailedGuessInfo> failedGuessHandler = new Observer<>(s -> {
+            LOGGER.info("Mistake {} of {}!", s.attemptsCount(), s.maxAttempts());
+            LOGGER.info("The word is {}", s.userAnswer());
+        });
+        Observer<WinInfo> winHandler = new Observer<>(s -> {
+            LOGGER.info("You win!");
+            LOGGER.info("You guessed word {}", s.answer());
+        });
 
-            session.guess('a');
-            session.guess('o');
-            session.guess('b');
+        Observer<DefeatInfo> defeatHandler = new Observer<>(s -> {
+            LOGGER.info("You lose!");
+            LOGGER.info("The word was {}", s.answer());
+        });
 
-            failedGuessLogger.unsubscribe();
-            successfulGuessLogger.unsubscribe();
-            winLogger.unsubscribe();
-            defeatLogger.unsubscribe();
-        }
+        session.addSuccessfulGuessHandler(successfulGuessHandler);
+        session.addFailedGuessHandler(failedGuessHandler);
+        session.addWinHandler(winHandler);
+        session.addDefeatHandler(defeatHandler);
+
+        session.guess('a');
+        session.guess('c');
+        session.guess('c');
+        session.guess('c');
+        session.guess('c');
+        session.guess('c');
+
+        successfulGuessHandler.unsubscribe();
+        failedGuessHandler.unsubscribe();
+        winHandler.unsubscribe();
+        defeatHandler.unsubscribe();
     }
 }

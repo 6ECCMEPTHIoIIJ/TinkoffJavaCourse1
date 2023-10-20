@@ -6,7 +6,8 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        HangmanConsole hangmanConsole = new edu.project1.HangmanConsole();
-        hangmanConsole.run();
+        try (GameManager gameManager = new GameManager()) {
+            gameManager.run();
+        }
     }
 }

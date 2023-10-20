@@ -1,11 +1,12 @@
 package edu.project1;
 
 import java.util.Set;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class Observable<T> {
+public class Observable<T> {
     private final Set<Observer<T>> observers = new java.util.HashSet<>();
 
-    public AutoCloseable subscribe(Observer<T> observer) {
+    public AutoCloseable subscribe(@NotNull Observer<T> observer) {
         observers.add(observer);
         return new Unsubscriber(observers, observer);
     }
