@@ -1,8 +1,12 @@
 package edu.project1;
 
 public class Main {
-    public static void main(String[] args) {
-        var hangman = new ConsoleHangman();
-        hangman.run();
+    private Main() {
+
+    }
+
+    public static void main(String[] args) throws Exception {
+        HangmanConsole hangmanConsole = new edu.project1.HangmanConsole();
+        hangmanConsole.run();
     }
 }

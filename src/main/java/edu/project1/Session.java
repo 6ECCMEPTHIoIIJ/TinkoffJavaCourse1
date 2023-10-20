@@ -1,59 +1,86 @@
 package edu.project1;
 
-import java.util.Arrays;
-import org.jetbrains.annotations.NotNull;
+public class Session implements AutoCloseable {
 
-public class Session {
-    private final int maxAttempts;
-    private int attemptsCount = 0;
-    private int userAnswerHitsCount = 0;
     private final String answer;
     private final char[] userAnswer;
+    private final int maxAttempts;
+    private int attemptsCount = 0;
+    private int hitsCount = 0;
 
-    public Session(int maxAttempts, String answer) {
-        this.maxAttempts = maxAttempts;
+    private final SuccessfulGuessObservable successfulGuessObservable = new SuccessfulGuessObservable();
+    private final FailedGuessObservable failedGuessObservable = new FailedGuessObservable();
+    private final DefeatObservable defeatObservable = new DefeatObservable();
+    private final WinObservable winObservable = new WinObservable();
+    private final FailedGuessHandler failedGuessHandler;
+    private final SuccessfulGuessHandler successfulGuessHandler;
+
+    public Session(String answer) {
         this.answer = answer;
+        this.maxAttempts = answer.length();
+
         userAnswer = new char[maxAttempts];
-        Arrays.fill(userAnswer, '*');
+        java.util.Arrays.fill(userAnswer, '*');
 
+        failedGuessHandler = new FailedGuessHandler(defeatObservable);
+        successfulGuessHandler = new SuccessfulGuessHandler(winObservable);
+
+        failedGuessHandler.subscribe(failedGuessObservable);
+        successfulGuessHandler.subscribe(successfulGuessObservable);
     }
 
-    @NotNull public GuessResult guess(char guess) {
-        if (isAnswerRight(guess)) {
-            updateAnswer(guess);
-
-            return (userAnswerHitsCount == maxAttempts)
-                ? new Win(attemptsCount, maxAttempts, Arrays.toString(userAnswer))
-                : new SuccessfulGuess(attemptsCount, maxAttempts, Arrays.toString(userAnswer));
+    public void guess(char guess) {
+        if (updateAnswer(guess)) {
+            successfulGuessObservable.sendNotification(new SuccessfulGuessData(
+                new String(userAnswer), hitsCount, maxAttempts));
         } else {
-            ++attemptsCount;
-
-            return (attemptsCount == maxAttempts)
-                ? new Defeat(attemptsCount, maxAttempts, Arrays.toString(userAnswer))
-                : new FailedGuess(attemptsCount, maxAttempts, Arrays.toString(userAnswer));
+            failedGuessObservable.sendNotification(new FailedGuessData(
+                answer, new String(userAnswer), attemptsCount, maxAttempts));
         }
     }
 
-    @NotNull public GuessResult giveUp() {
-        return new Defeat(attemptsCount, maxAttempts, Arrays.toString(userAnswer));
+    public void giveUp() {
+        defeatObservable.sendNotification(new edu.project1.DefeatData(answer));
     }
 
-    private boolean isAnswerRight(char guess) {
-        for (int i = 0; i < maxAttempts; ++i) {
-            if (Character.toLowerCase(answer.charAt(i)) == Character.toLowerCase(guess)) {
-                return true;
-            }
-        }
-
-        return false;
+    public DefeatObservable getDefeatObservable() {
+        return defeatObservable;
     }
 
-    private void updateAnswer(char guess) {
-        for (int i = 0; i < maxAttempts; ++i) {
+    public WinObservable getWinObservable() {
+        return winObservable;
+    }
+
+    public SuccessfulGuessObservable getSuccessfulGuessObservable() {
+        return successfulGuessObservable;
+    }
+
+    public FailedGuessObservable getFailedGuessObservable() {
+        return failedGuessObservable;
+    }
+
+    @Override
+    public void close() throws Exception {
+        failedGuessHandler.unsubscribe();
+        successfulGuessHandler.unsubscribe();
+    }
+
+    private boolean updateAnswer(char guess) {
+        boolean isAnswerCorrect = java.util.stream.IntStream.range(0, maxAttempts).filter((i) -> {
+            boolean isHit = false;
             if (Character.toLowerCase(answer.charAt(i)) == Character.toLowerCase(guess)) {
+                ++hitsCount;
                 userAnswer[i] = answer.charAt(i);
-                ++userAnswerHitsCount;
+                isHit = true;
             }
+
+            return isHit;
+        }).count() > 0;
+
+        if (!isAnswerCorrect) {
+            ++attemptsCount;
         }
+
+        return isAnswerCorrect;
     }
 }
