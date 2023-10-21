@@ -1,26 +1,26 @@
-package edu.project1;
+package edu.project1.observer;
 
-import java.util.function.Consumer;
 import org.jetbrains.annotations.NotNull;
+import java.util.function.Consumer;
 
 public class Observer<T> {
+    private final Consumer<T> consumer;
     private AutoCloseable unsubscriber;
-    private final Consumer<T> action;
 
-    public Observer(Consumer<T> action) {
-        this.action = action;
+    public Observer(Consumer<T> consumer) {
+        this.consumer = consumer;
     }
 
-    public void subscribe(@NotNull Observable<T> provider) {
+    public void subscribe(@NotNull Observable<T> observable) {
         if (unsubscriber != null) {
-            throw new MultipleSubscriptionException();
+            throw new MultipleSubscribeException();
         }
 
-        unsubscriber = provider.subscribe(this);
+        unsubscriber = observable.subscribe(this);
     }
 
     public void onNotification(T info) {
-        action.accept(info);
+        consumer.accept(info);
     }
 
     public void unsubscribe() throws Exception {
@@ -32,3 +32,4 @@ public class Observer<T> {
         unsubscriber = null;
     }
 }
+
